@@ -28,6 +28,7 @@ export const seedProject: ProjectSeed = {
       devStatus: "in_progress",
       testStatus: "ready_to_test",
       acceptanceStatus: "under_review",
+      blockedByFunctionIds: [],
       qualityFlags: {
         needs_refactor: false,
         needs_clarification: false
@@ -43,6 +44,7 @@ export const seedProject: ProjectSeed = {
       devStatus: "not_started",
       testStatus: "not_tested",
       acceptanceStatus: "in_scope",
+      blockedByFunctionIds: ["function_manage_testcases"],
       qualityFlags: {
         needs_refactor: false,
         needs_clarification: false

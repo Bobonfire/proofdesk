@@ -35,6 +35,32 @@ body {
   padding: 16px;
 }
 
+.scope-switcher {
+  display: inline-flex;
+  border: 1px solid #c6d7e8;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.scope-tab {
+  border: 0;
+  border-right: 1px solid #c6d7e8;
+  border-radius: 0;
+  background: #f4f8fc;
+  padding: 8px 12px;
+  font-weight: 600;
+}
+
+.scope-tab:last-child {
+  border-right: 0;
+}
+
+.scope-tab.active {
+  background: #0d4a73;
+  color: #fff;
+}
+
 .badge {
   display: inline-block;
   border-radius: 8px;
@@ -70,6 +96,19 @@ body {
   padding: 12px;
 }
 
+.dependency-box {
+  margin: 10px 0;
+  padding: 8px 10px;
+  border: 1px dashed #f0c36d;
+  background: #fffaef;
+  border-radius: 8px;
+}
+
+.dependency-box ul {
+  margin: 6px 0 0 20px;
+  padding: 0;
+}
+
 .row-title {
   margin: 0 0 8px;
   font-size: 15px;
@@ -85,6 +124,41 @@ body {
   margin: 10px 0;
   display: flex;
   gap: 8px;
+}
+
+.status-flow {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0 14px;
+}
+
+.status-node {
+  border: 1px solid #c6d7e8;
+  border-radius: 999px;
+  padding: 5px 12px;
+  background: #f5f9fd;
+  color: #2f4d6a;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.status-node.complete {
+  background: #dbf1e7;
+  border-color: #8ec5a8;
+  color: #164f2f;
+}
+
+.status-link {
+  height: 3px;
+  background: #d8e5f1;
+  border-radius: 999px;
+}
+
+.status-link.complete {
+  background: #8ec5a8;
 }
 
 label {
@@ -176,5 +250,13 @@ button:disabled {
   .row-grid,
   .testcase-grid {
     grid-template-columns: 1fr;
+  }
+
+  .scope-switcher {
+    width: 100%;
+  }
+
+  .scope-tab {
+    flex: 1;
   }
 }

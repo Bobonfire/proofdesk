@@ -5,6 +5,7 @@ export type TestStatus = "not_tested" | "ready_to_test" | "passed" | "failed";
 export type AcceptanceStatus = "in_scope" | "under_review" | "accepted" | "rejected";
 
 export type ReadyForCommit = "NOT_READY" | "ALMOST_READY" | "READY";
+export type ScopeLevel = "Function" | "Feature" | "Epic" | "Product";
 
 export type Priority = "high" | "medium" | "low";
 
@@ -37,6 +38,7 @@ export interface FunctionItem {
   devStatus: DevStatus;
   testStatus: TestStatus;
   acceptanceStatus: AcceptanceStatus;
+  blockedByFunctionIds?: string[];
   qualityFlags?: FunctionQualityFlags;
   notes?: string;
 }
@@ -71,7 +73,28 @@ export interface ReleaseState {
   requiredFunctions: number;
   acceptedFunctions: number;
   blockingFunctions: number;
+  highPriorityBlocking: number;
+  optionalPending: number;
+  readinessScorePercent: number;
   readinessReason: string;
+}
+
+export interface ScopeReadinessItem {
+  scopeLevel: ScopeLevel;
+  scopeId: string;
+  scopeName: string;
+  totalHighPriorityFunctions: number;
+  readyHighPriorityFunctions: number;
+  blockingHighPriorityFunctions: number;
+  readinessScorePercent: number;
+  ready: boolean;
+}
+
+export interface ScopeReadiness {
+  function: ScopeReadinessItem[];
+  feature: ScopeReadinessItem[];
+  epic: ScopeReadinessItem[];
+  product: ScopeReadinessItem;
 }
 
 export interface RuntimeState {

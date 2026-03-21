@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  type ScopeLevel,
   seedProject,
   type AcceptanceStatus,
   type DevStatus,
+  type Feature,
   type FunctionItem,
   type RuntimeState,
   type TestCase,
@@ -10,7 +12,7 @@ import {
   type TestStatus
 } from "@proofdesk/domain";
 import { runApiExecution } from "@proofdesk/execution";
-import { computeReleaseState } from "@proofdesk/release";
+import { computeReleaseState, computeScopeReadiness } from "@proofdesk/release";
 import { loadRuntimeState, saveRuntimeState } from "@proofdesk/storage";
 
 const DEV_STATUSES: DevStatus[] = ["not_started", "in_progress", "built", "partial", "blocked"];
@@ -19,6 +21,7 @@ const ACCEPTANCE_STATUSES: AcceptanceStatus[] = ["in_scope", "under_review", "ac
 const TEST_TYPES: Array<TestCase["type"]> = ["smoke", "happy_path", "edge_case", "negative_case"];
 const EXECUTION_TYPES: Array<TestCase["executionType"]> = ["api", "ui"];
 const HTTP_METHODS: NonNullable<TestCase["apiConfig"]>["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+const UI_SCOPE_LEVELS: ScopeLevel[] = ["Function", "Feature", "Epic"];
 
 function readyBadgeClass(state: "NOT_READY" | "ALMOST_READY" | "READY"): string {
   if (state === "READY") {
@@ -30,6 +33,28 @@ function readyBadgeClass(state: "NOT_READY" | "ALMOST_READY" | "READY"): string 
   }
 
   return "badge badge-not";
+}
+
+function statusFlowStep(func: FunctionItem): 1 | 2 | 3 {
+  if (func.acceptanceStatus === "accepted") {
+    return 3;
+  }
+
+  if (func.testStatus === "passed") {
+    return 2;
+  }
+
+  return 1;
+}
+
+function functionIdsForEpic(featureById: Map<string, Feature>, epicFeatureIds: string[], functions: FunctionItem[]): string[] {
+  const featureSet = new Set(epicFeatureIds);
+  return functions
+    .filter((func) => {
+      const feature = featureById.get(func.featureId);
+      return Boolean(feature && featureSet.has(feature.id));
+    })
+    .map((func) => func.id);
 }
 
 function createId(prefix: string): string {
@@ -77,6 +102,8 @@ export default function App() {
   const [testCases, setTestCases] = useState<TestCase[]>(stored?.testCases ?? seedProject.testCases);
   const [runHistory, setRunHistory] = useState<TestRunRecord[]>(stored?.runHistory ?? []);
   const [approvedForRelease, setApprovedForRelease] = useState<boolean>(stored?.approvedForRelease ?? false);
+  const [scopeLevel, setScopeLevel] = useState<ScopeLevel>("Function");
+  const [selectedScopeId, setSelectedScopeId] = useState<string>("");
   const [selectedFunctionId, setSelectedFunctionId] = useState<string>(
     (stored?.functions ?? seedProject.functions)[0]?.id ?? ""
   );
@@ -102,19 +129,122 @@ export default function App() {
     () => computeReleaseState(functions, approvedForRelease),
     [functions, approvedForRelease]
   );
+  const scopeReadiness = useMemo(
+    () => computeScopeReadiness(functions, seedProject.features, seedProject.epics),
+    [functions]
+  );
 
   const featureById = useMemo(() => {
     return new Map(seedProject.features.map((feature) => [feature.id, feature]));
   }, []);
+  const functionById = useMemo(() => new Map(functions.map((func) => [func.id, func])), [functions]);
+
+  const scopeItems = useMemo(() => {
+    if (scopeLevel === "Function") {
+      return functions.map((func) => ({ id: func.id, name: func.name }));
+    }
+
+    if (scopeLevel === "Feature") {
+      return seedProject.features.map((feature) => ({ id: feature.id, name: feature.name }));
+    }
+
+    return seedProject.epics.map((epic) => ({ id: epic.id, name: epic.name }));
+  }, [functions, scopeLevel]);
+
+  useEffect(() => {
+    if (scopeItems.length === 0) {
+      setSelectedScopeId("");
+      return;
+    }
+
+    const exists = scopeItems.some((item) => item.id === selectedScopeId);
+    if (!exists) {
+      setSelectedScopeId(scopeItems[0].id);
+    }
+  }, [scopeItems, selectedScopeId]);
+
+  const scopedFunctions = useMemo(() => {
+    if (!selectedScopeId) {
+      return functions;
+    }
+
+    if (scopeLevel === "Function") {
+      return functions.filter((func) => func.id === selectedScopeId);
+    }
+
+    if (scopeLevel === "Feature") {
+      return functions.filter((func) => func.featureId === selectedScopeId);
+    }
+
+    const epic = seedProject.epics.find((item) => item.id === selectedScopeId);
+    if (!epic) {
+      return [];
+    }
+
+    const functionIds = new Set(functionIdsForEpic(featureById, epic.featureIds, functions));
+    return functions.filter((func) => functionIds.has(func.id));
+  }, [featureById, functions, scopeLevel, selectedScopeId]);
+
+  useEffect(() => {
+    if (scopedFunctions.length === 0) {
+      return;
+    }
+
+    const exists = scopedFunctions.some((func) => func.id === selectedFunctionId);
+    if (!exists) {
+      setSelectedFunctionId(scopedFunctions[0].id);
+    }
+  }, [scopedFunctions, selectedFunctionId]);
 
   const selectedFunction = useMemo(
     () => functions.find((func) => func.id === selectedFunctionId) ?? functions[0],
     [functions, selectedFunctionId]
   );
 
+  const selectedScopeReadinessItem = useMemo(() => {
+    if (!selectedScopeId) {
+      return null;
+    }
+
+    if (scopeLevel === "Function") {
+      return scopeReadiness.function.find((item) => item.scopeId === selectedScopeId) ?? null;
+    }
+
+    if (scopeLevel === "Feature") {
+      return scopeReadiness.feature.find((item) => item.scopeId === selectedScopeId) ?? null;
+    }
+
+    return scopeReadiness.epic.find((item) => item.scopeId === selectedScopeId) ?? null;
+  }, [scopeLevel, scopeReadiness, selectedScopeId]);
+
+  const scopedHighPriorityCount = useMemo(
+    () => scopedFunctions.filter((func) => func.priority === "high").length,
+    [scopedFunctions]
+  );
+
+  const scopedHighPriorityAcceptedCount = useMemo(
+    () =>
+      scopedFunctions.filter(
+        (func) =>
+          func.priority === "high" &&
+          (func.devStatus === "built" || func.devStatus === "partial") &&
+          func.testStatus === "passed" &&
+          func.acceptanceStatus === "accepted"
+      ).length,
+    [scopedFunctions]
+  );
+
   const selectedFunctionTestCases = useMemo(
     () => testCases.filter((tc) => tc.functionId === selectedFunction?.id),
     [selectedFunction?.id, testCases]
+  );
+
+  const blockedByFunctions = useMemo(
+    () =>
+      (selectedFunction?.blockedByFunctionIds ?? [])
+        .map((id) => functionById.get(id))
+        .filter((item): item is FunctionItem => Boolean(item)),
+    [functionById, selectedFunction?.blockedByFunctionIds]
   );
 
   const firstApiTestCase = useMemo(
@@ -303,6 +433,7 @@ export default function App() {
         devStatus: func.devStatus,
         testStatus: func.testStatus,
         acceptanceStatus: func.acceptanceStatus,
+        blocked_by_function_ids: func.blockedByFunctionIds ?? [],
         quality_flags: {
           needs_refactor: Boolean(func.qualityFlags?.needs_refactor),
           needs_clarification: Boolean(func.qualityFlags?.needs_clarification)
@@ -480,12 +611,38 @@ Export created from ProofDesk UI.
 
       <div className="grid">
         <section className="card">
-          <h2>Overview</h2>
-          <p className="meta">Epics: {seedProject.epics.length}</p>
-          <p className="meta">Features: {seedProject.features.length}</p>
-          <p className="meta">Functions: {functions.length}</p>
-          <p className="meta">Test cases: {testCases.length}</p>
-          <p className="meta">Runs logged: {runHistory.length}</p>
+          <h2>Scope Perspective</h2>
+          <div className="scope-switcher" role="tablist" aria-label="Scope perspective switch">
+            {UI_SCOPE_LEVELS.map((level) => (
+              <button
+                key={level}
+                type="button"
+                className={scopeLevel === level ? "scope-tab active" : "scope-tab"}
+                onClick={() => setScopeLevel(level)}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
+          <label>
+            Scope item
+            <select value={selectedScopeId} onChange={(event) => setSelectedScopeId(event.target.value)}>
+              {scopeItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="meta">Perspective: {scopeLevel}</p>
+          <p className="meta">
+            Scope readiness: {selectedScopeReadinessItem?.readinessScorePercent ?? 0}% (
+            {selectedScopeReadinessItem?.readyHighPriorityFunctions ?? 0}/
+            {selectedScopeReadinessItem?.totalHighPriorityFunctions ?? 0} high-priority ready)
+          </p>
+          <p className="meta">Functions in scope: {scopedFunctions.length}</p>
+          <p className="meta">Epics: {seedProject.epics.length} | Features: {seedProject.features.length}</p>
+          <p className="meta">Test cases: {testCases.length} | Runs logged: {runHistory.length}</p>
         </section>
 
         <section className="card">
@@ -494,9 +651,15 @@ Export created from ProofDesk UI.
             Ready for Commit
             <span className={readyBadgeClass(releaseState.readyForCommit)}>{releaseState.readyForCommit}</span>
           </p>
-          <p className="meta">Required functions: {releaseState.requiredFunctions}</p>
-          <p className="meta">Accepted functions: {releaseState.acceptedFunctions}</p>
-          <p className="meta">Blocking functions: {releaseState.blockingFunctions}</p>
+          <p className="meta">
+            Release readiness score: {releaseState.readinessScorePercent}% ({releaseState.acceptedFunctions}/
+            {releaseState.requiredFunctions})
+          </p>
+          <p className="meta">High-priority blocking: {releaseState.highPriorityBlocking}</p>
+          <p className="meta">Optional pending: {releaseState.optionalPending}</p>
+          <p className="meta">
+            Scoped readiness: {scopedHighPriorityAcceptedCount}/{scopedHighPriorityCount} high-priority accepted
+          </p>
           <p className="meta">Reason: {releaseState.readinessReason}</p>
           <label className="check">
             <input
@@ -519,7 +682,7 @@ Export created from ProofDesk UI.
         <label>
           Select function
           <select value={selectedFunction?.id ?? ""} onChange={(event) => setSelectedFunctionId(event.target.value)}>
-            {functions.map((func) => (
+            {(scopedFunctions.length > 0 ? scopedFunctions : functions).map((func) => (
               <option key={func.id} value={func.id}>
                 {func.name}
               </option>
@@ -533,6 +696,32 @@ Export created from ProofDesk UI.
             <p className="meta">Feature: {featureById.get(selectedFunction.featureId)?.name ?? "Unknown"}</p>
             <p className="meta">Priority: {selectedFunction.priority}</p>
             <p className="meta">{selectedFunction.description}</p>
+            {blockedByFunctions.length > 0 ? (
+              <div className="dependency-box">
+                <strong>Blocked by</strong>
+                <ul>
+                  {blockedByFunctions.map((func) => (
+                    <li key={func.id}>{func.name}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="meta">Blocked by: none</p>
+            )}
+
+            <div className="status-flow">
+              <div className={statusFlowStep(selectedFunction) >= 1 ? "status-node complete" : "status-node"}>
+                DEV
+              </div>
+              <div className={statusFlowStep(selectedFunction) >= 2 ? "status-link complete" : "status-link"} />
+              <div className={statusFlowStep(selectedFunction) >= 2 ? "status-node complete" : "status-node"}>
+                TEST
+              </div>
+              <div className={statusFlowStep(selectedFunction) >= 3 ? "status-link complete" : "status-link"} />
+              <div className={statusFlowStep(selectedFunction) >= 3 ? "status-node complete" : "status-node"}>
+                ACCEPT
+              </div>
+            </div>
 
             <div className="row-grid">
               <label>
