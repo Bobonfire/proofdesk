@@ -9,9 +9,9 @@ Core principles:
 - Never release without acceptance-state validation.
 
 Mandatory workflow before coding:
-1. Read DOCUMENT_HIERARCHY.md
-2. Read ARCHITECTURE.md
-3. Read DEFINITION_OF_DONE.md
+1. Read docs/DOCUMENT_HIERARCHY.md
+2. Read docs/ARCHITECTURE.md
+3. Read docs/DEFINITION_OF_DONE.md
 4. Provide plan before execution (files, risks, tests)
 
 Tester agent responsibilities:

@@ -118,7 +118,7 @@ packages/release
 
 Zie:
 
-docs/ARCHITECTURE.md
+ARCHITECTURE.md
 
 voor details.
 
@@ -136,7 +136,7 @@ Release readiness wordt hieruit afgeleid.
 
 Zie:
 
-docs/STATE_MODEL.md
+STATE_MODEL.md
 
 voor exacte transities.
 
@@ -211,14 +211,14 @@ src/lib/release/
 
 Belangrijkste projectcontracten:
 
-docs/AGENT_INSTRUCTIONS.md  
-docs/ARCHITECTURE.md  
-docs/DOCUMENT_HIERARCHY.md  
-docs/DEFINITION_OF_DONE.md  
-docs/STATE_MODEL.md  
-docs/TEST_STRATEGY.md  
-docs/SECURITY_BASELINE.md  
-docs/OBSERVABILITY_RUNBOOK.md  
+AGENT_INSTRUCTIONS.md  
+ARCHITECTURE.md  
+DOCUMENT_HIERARCHY.md  
+DEFINITION_OF_DONE.md  
+STATE_MODEL.md  
+TEST_STRATEGY.md  
+SECURITY_BASELINE.md  
+OBSERVABILITY_RUNBOOK.md  
 
 Deze documenten vormen samen de source-of-truth voor agentgedrag en systeemstructuur.
 
@@ -238,7 +238,7 @@ Agents moeten:
 
 Zie:
 
-docs/AGENT_INSTRUCTIONS.md
+AGENT_INSTRUCTIONS.md
 
 ---
 
@@ -257,7 +257,7 @@ ProofDesk v1 is succesvol wanneer:
 
 Zie:
 
-docs/DEFINITION_OF_DONE.md
+DEFINITION_OF_DONE.md
 
 ---
 

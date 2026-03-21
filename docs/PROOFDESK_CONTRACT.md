@@ -3,14 +3,14 @@
 This document defines the file contract for running ProofDesk against any code repository.
 
 Document precedence used for this contract:
-- `DOCUMENT_HIERARCHY.md`
-- `AGENT_INSTRUCTIONS.md`
-- `ARCHITECTURE.md`
-- `STATE_MODEL.md`
-- `DEFINITION_OF_DONE.md`
-- `TEST_STRATEGY.md`
-- `SECURITY_BASELINE.md`
-- `OBSERVABILITY_RUNBOOK.md`
+- `docs/DOCUMENT_HIERARCHY.md`
+- `docs/AGENT_INSTRUCTIONS.md`
+- `docs/ARCHITECTURE.md`
+- `docs/STATE_MODEL.md`
+- `docs/DEFINITION_OF_DONE.md`
+- `docs/TEST_STRATEGY.md`
+- `docs/SECURITY_BASELINE.md`
+- `docs/OBSERVABILITY_RUNBOOK.md`
 
 ## 1. Canonical enums (state model is leading)
 

@@ -2,6 +2,7 @@
 
 Product overview:
 - [`docs/PRODUCT_OVERVIEW.md`](docs/PRODUCT_OVERVIEW.md)
+- [`docs/README.md`](docs/README.md) (document index)
 
 ## Start UI (no manual npm commands)
 
