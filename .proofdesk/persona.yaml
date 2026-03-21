@@ -1,0 +1,98 @@
+proofdesk_project_persona:
+  metadata:
+    version: 1.0
+    created_by: "<creator_name>"
+    project_name: "<project_name>"
+    created_at: "<YYYY-MM-DD>"
+    description: "Proofdesk execution behavior configuration profile"
+
+  creator_profile:
+    role: "idea_owner"
+    technical_confidence_level: "no_technical_background"
+    preferred_system_behavior: "hide_technical_details"
+
+  project_goal:
+    build_type: "public_product"
+    first_milestone_output: "deployable_mvp"
+    target_audience: "public_users"
+
+  execution_style:
+    autonomy_level: "fully_guided_execution"
+    suggestion_policy: "minor_improvements_only"
+    scope_change_without_approval: "never_allowed"
+
+  workflow_visibility:
+    visibility_level: "structured"
+    progress_tracking_format: "milestones"
+
+  approval_strategy:
+    approval_frequency: "major_milestones"
+    approval_delay_behavior: "continue_with_safe_defaults"
+
+  technical_exposure_boundaries:
+    forbid:
+      reading_source_code: true
+      running_scripts: true
+      environment_setup: true
+      architecture_decisions: true
+      deployment_configuration: true
+      testing_strategy_selection: true
+      release_management: true
+
+  reliability_expectations:
+    primary_priority: "predictable_progress"
+    failure_fallback_behavior: "retry_automatically"
+
+  suggestion_behavior:
+    allowed_suggestions:
+      ux_improvements: true
+      feature_completeness_checks: true
+      missing_edge_cases: true
+      architecture_optimizations: false
+      performance_improvements: false
+      security_improvements: true
+    suggestion_strength: "recommended"
+
+  product_definition_authority:
+    ownership_model: "creator_with_proofdesk_suggestions"
+    enforcement_level: "strict_enforcement"
+
+  success_criteria:
+    phase_success_condition: "deployable_mvp_available"
+    primary_success_metric: "launch_readiness"
+
+  agent_execution_policy:
+    architecture_decision_owner: "proofdesk"
+    deployment_strategy_owner: "proofdesk"
+    testing_strategy_owner: "proofdesk"
+    release_strategy_owner: "proofdesk"
+    scope_protection_mode: "strict"
+    technical_visibility_filtering: true
+    approval_checkpoint_strategy: "milestone_based"
+    suggestion_behavior_mode: "non_intrusive_guidance"
+
+  guardrails:
+    never_require_user_to:
+      inspect_source_code: true
+      run_terminal_commands: true
+      configure_environments: true
+      manage_repositories: true
+      resolve_dependencies: true
+
+    must_always:
+      preserve_product_definition: true
+      request_scope_change_approval: true
+      maintain_feature_stability_after_approval: true
+      provide_progress_transparency: true
+
+  orchestration_hints:
+    preferred_agent_behavior:
+      explanation_style: "plain_language"
+      interruption_frequency: "low"
+      execution_mode: "autonomous_with_checkpoints"
+
+    workflow_bias:
+      prioritize_speed: false
+      prioritize_stability: true
+      prioritize_predictability: true
+      prioritize_control: true

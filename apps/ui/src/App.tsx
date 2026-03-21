@@ -14,6 +14,7 @@ import {
 import { runApiExecution } from "@proofdesk/execution";
 import { computeReleaseState, computeScopeReadiness } from "@proofdesk/release";
 import { loadRuntimeState, saveRuntimeState } from "@proofdesk/storage";
+import { createPersonaBootstrapArtifacts } from "./personaConfig";
 
 const DEV_STATUSES: DevStatus[] = ["not_started", "in_progress", "built", "partial", "blocked"];
 const TEST_STATUSES: TestStatus[] = ["not_tested", "ready_to_test", "passed", "failed"];
@@ -403,6 +404,7 @@ export default function App() {
 
   async function exportProofdeskState() {
     setExportMessage("Exporting...");
+    const personaBootstrap = createPersonaBootstrapArtifacts();
     const generatedAt = new Date().toISOString();
     const compact = toCompactUtcTimestamp(generatedAt);
     const shortSha = randomHex(7);
@@ -453,6 +455,7 @@ export default function App() {
       repo_root: ".",
       default_branch: "main",
       created_at: generatedAt,
+      orchestration_context: personaBootstrap.orchestrationContext,
       status_enums: {
         devStatus: DEV_STATUSES,
         testStatus: TEST_STATUSES,
@@ -500,6 +503,8 @@ Export created from ProofDesk UI.
 - proofdesk/state/snapshots/${snapshotName}
 - proofdesk/events/${eventName}
 - proofdesk/index/manifest.json
+- ${personaBootstrap.yamlPath}
+- ${personaBootstrap.schemaPath}
 
 # Status Changes
 
@@ -567,6 +572,7 @@ Export created from ProofDesk UI.
       const eventsDir = await proofdeskDir.getDirectoryHandle("events", { create: true });
       const updatesDir = await proofdeskDir.getDirectoryHandle("updates", { create: true });
       const indexDir = await proofdeskDir.getDirectoryHandle("index", { create: true });
+      const hiddenProofdeskDir = await repoRoot.getDirectoryHandle(".proofdesk", { create: true });
 
       await writeTextFile(configDir, "project.json", projectText);
       await writeTextFile(stateDir, "current.json", currentText);
@@ -574,7 +580,9 @@ Export created from ProofDesk UI.
       await writeTextFile(eventsDir, eventName, eventText);
       await writeTextFile(updatesDir, updateName, updateText);
       await writeTextFile(indexDir, "manifest.json", manifestText);
-      setExportMessage("Export complete: files written to selected folder/proofdesk.");
+      await writeTextFile(hiddenProofdeskDir, "persona.yaml", personaBootstrap.yamlContent);
+      await writeTextFile(hiddenProofdeskDir, "persona.schema.json", personaBootstrap.schemaContent);
+      setExportMessage("Export complete: files written to selected folder/proofdesk and selected folder/.proofdesk.");
       return;
     }
 
@@ -584,7 +592,9 @@ Export created from ProofDesk UI.
       [`proofdesk/state/snapshots/${snapshotName}`]: currentObj,
       [`proofdesk/events/${eventName}`]: eventObj,
       [`proofdesk/updates/${updateName}`]: updateText,
-      "proofdesk/index/manifest.json": manifestObj
+      "proofdesk/index/manifest.json": manifestObj,
+      [personaBootstrap.yamlPath]: personaBootstrap.yamlContent,
+      [personaBootstrap.schemaPath]: JSON.parse(personaBootstrap.schemaContent)
     };
 
     const blob = new Blob([JSON.stringify(fallbackBundle, null, 2)], { type: "application/json" });

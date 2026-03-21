@@ -1,5 +1,8 @@
 # ProofDesk
 
+Product overview:
+- [`docs/PRODUCT_OVERVIEW.md`](docs/PRODUCT_OVERVIEW.md)
+
 ## Start UI (no manual npm commands)
 
 Double-click:

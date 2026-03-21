@@ -4,4 +4,6 @@ coverage/
 .vscode/
 *.log
 npm-debug.log*
-.proofdesk/
+.proofdesk/*
+!.proofdesk/persona.yaml
+!.proofdesk/persona.schema.json
