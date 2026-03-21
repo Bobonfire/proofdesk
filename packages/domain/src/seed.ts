@@ -3,27 +3,27 @@ import type { ProjectSeed } from "./types";
 export const seedProject: ProjectSeed = {
   epics: [
     {
-      id: "epic_activities",
-      name: "Activities",
-      description: "Ride data ingestion and inspection.",
-      featureIds: ["feature_import"]
+      id: "epic_proofdesk_core",
+      name: "ProofDesk Core",
+      description: "Core acceptance cockpit capabilities.",
+      featureIds: ["feature_function_validation"]
     }
   ],
   features: [
     {
-      id: "feature_import",
-      epicId: "epic_activities",
-      name: "Import Flow",
-      description: "Allow users to import and verify activities.",
-      functionIds: ["function_import_file", "function_deduplicate"]
+      id: "feature_function_validation",
+      epicId: "epic_proofdesk_core",
+      name: "Function Validation Flow",
+      description: "Track function status, tests and acceptance in one cockpit.",
+      functionIds: ["function_manage_testcases", "function_release_readiness"]
     }
   ],
   functions: [
     {
-      id: "function_import_file",
-      featureId: "feature_import",
-      name: "Import activity file",
-      description: "Ingest a FIT file and create an activity record.",
+      id: "function_manage_testcases",
+      featureId: "feature_function_validation",
+      name: "Manage function testcases",
+      description: "Create and maintain testcases for function-level validation.",
       priority: "high",
       devStatus: "in_progress",
       testStatus: "ready_to_test",
@@ -32,13 +32,13 @@ export const seedProject: ProjectSeed = {
         needs_refactor: false,
         needs_clarification: false
       },
-      notes: "Baseline for v1 test flow."
+      notes: "Baseline for testcase editing flow."
     },
     {
-      id: "function_deduplicate",
-      featureId: "feature_import",
-      name: "Prevent duplicate activity import",
-      description: "Reject duplicate import by external id.",
+      id: "function_release_readiness",
+      featureId: "feature_function_validation",
+      name: "Compute release readiness",
+      description: "Determine release eligibility from status and acceptance state.",
       priority: "high",
       devStatus: "not_started",
       testStatus: "not_tested",
@@ -51,12 +51,12 @@ export const seedProject: ProjectSeed = {
   ],
   testCases: [
     {
-      id: "tc_import_happy",
-      functionId: "function_import_file",
-      name: "Import valid FIT file",
+      id: "tc_testcase_crud_happy",
+      functionId: "function_manage_testcases",
+      name: "Create testcase from UI",
       type: "happy_path",
       executionType: "api",
-      expectedOutcome: "API should return a successful response for baseline connectivity.",
+      expectedOutcome: "API test should pass and be logged in run history.",
       apiConfig: {
         method: "GET",
         url: "https://jsonplaceholder.typicode.com/todos/1",
@@ -65,12 +65,12 @@ export const seedProject: ProjectSeed = {
       }
     },
     {
-      id: "tc_dedup_negative",
-      functionId: "function_deduplicate",
-      name: "Reject duplicate external id",
+      id: "tc_release_panel_negative",
+      functionId: "function_release_readiness",
+      name: "Block release when acceptance is missing",
       type: "negative_case",
       executionType: "api",
-      expectedOutcome: "API should return a successful response for baseline connectivity.",
+      expectedOutcome: "System must keep READY state blocked when acceptance is incomplete.",
       apiConfig: {
         method: "GET",
         url: "https://jsonplaceholder.typicode.com/todos/2",
