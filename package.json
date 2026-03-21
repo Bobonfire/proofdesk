@@ -1,0 +1,14 @@
+{
+  "name": "proofdesk",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @proofdesk/ui",
+    "build": "npm run build -w @proofdesk/ui",
+    "typecheck": "npm run typecheck -w @proofdesk/ui"
+  }
+}
