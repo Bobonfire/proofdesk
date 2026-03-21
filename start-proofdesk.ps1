@@ -18,6 +18,24 @@ function Require-Command {
 Require-Command "node"
 Require-Command "npm"
 
+function Wait-ForUrl {
+  param(
+    [Parameter(Mandatory = $true)][string]$Url,
+    [int]$Retries = 25
+  )
+
+  for ($i = 0; $i -lt $Retries; $i++) {
+    try {
+      Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Head -TimeoutSec 2 | Out-Null
+      return $true
+    } catch {
+      Start-Sleep -Milliseconds 700
+    }
+  }
+
+  return $false
+}
+
 if (-not (Test-Path (Join-Path $root "node_modules"))) {
   Write-Host "Installing dependencies (one-time)..."
   npm install
@@ -28,10 +46,18 @@ if ($CheckOnly) {
   exit 0
 }
 
-$devCommand = "Set-Location '$root'; npm run dev -w @proofdesk/ui -- --host localhost --port $Port --strictPort --open"
+$url = "http://127.0.0.1:$Port"
+
+if (Wait-ForUrl -Url $url -Retries 2) {
+  Start-Process $url | Out-Null
+  Write-Host "ProofDesk draait al. Browser geopend op $url"
+  exit 0
+}
+
+$devCommand = "Set-Location '$root'; npm run dev -w @proofdesk/ui -- --host 127.0.0.1 --port $Port --strictPort"
 
 if ($Detach) {
-  Start-Process `
+  $proc = Start-Process `
     -FilePath "powershell" `
     -ArgumentList @(
       "-NoExit",
@@ -39,10 +65,18 @@ if ($Detach) {
       "Bypass",
       "-Command",
       $devCommand
-    ) | Out-Null
+    ) `
+    -PassThru
 
-  Write-Host "ProofDesk server window gestart. Browser wordt automatisch geopend."
+  if (Wait-ForUrl -Url $url) {
+    Start-Process $url | Out-Null
+    Write-Host "ProofDesk gestart en browser geopend op $url"
+  } else {
+    Start-Process $url | Out-Null
+    Write-Host "Servervenster gestart (PID $($proc.Id)). Browser geopend op $url."
+    Write-Host "Als de pagina nog leeg is: wacht 5 seconden en ververs 1x."
+  }
   exit 0
 }
 
-Invoke-Expression $devCommand
+Invoke-Expression "$devCommand --open"
