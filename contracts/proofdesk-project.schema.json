@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofdesk.local/schemas/proofdesk-project.schema.json",
+  "title": "ProofDesk Project Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "project_name",
+    "repo_root",
+    "default_branch",
+    "created_at",
+    "status_enums"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]{3,64}$"
+    },
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "default_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status_enums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "devStatus",
+        "testStatus",
+        "acceptanceStatus",
+        "readyForCommit"
+      ],
+      "properties": {
+        "devStatus": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "const": [
+            "not_started",
+            "in_progress",
+            "built",
+            "partial",
+            "blocked"
+          ]
+        },
+        "testStatus": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "const": [
+            "not_tested",
+            "ready_to_test",
+            "passed",
+            "failed"
+          ]
+        },
+        "acceptanceStatus": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "const": [
+            "in_scope",
+            "under_review",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "readyForCommit": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "const": [
+            "NOT_READY",
+            "ALMOST_READY",
+            "READY"
+          ]
+        }
+      }
+    }
+  }
+}

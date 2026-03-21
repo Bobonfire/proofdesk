@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofdesk.local/schemas/proofdesk-event.schema.json",
+  "title": "ProofDesk Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "seq",
+    "created_at",
+    "type",
+    "actor",
+    "payload",
+    "snapshot_ref"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^PD_EVT_[0-9]{8}T[0-9]{6}Z_[0-9]{4}_[a-z0-9_]+$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "status_change",
+        "test_execution",
+        "approval_trigger",
+        "release_readiness_computed",
+        "manual_note"
+      ]
+    },
+    "actor": {
+      "type": "string",
+      "enum": [
+        "user",
+        "agent",
+        "system"
+      ]
+    },
+    "function_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "snapshot_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^PD_STATE_[0-9]{8}T[0-9]{6}Z_[a-f0-9]{7,12}\\.json$"
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^PD_EVT_[0-9]{8}T[0-9]{6}Z_[0-9]{4}_[a-z0-9_]+$"
+    }
+  }
+}

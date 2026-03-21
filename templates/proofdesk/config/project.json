@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "example_project",
+  "project_name": "Example Project",
+  "repo_root": ".",
+  "default_branch": "main",
+  "created_at": "2026-03-21T00:00:00Z",
+  "status_enums": {
+    "devStatus": [
+      "not_started",
+      "in_progress",
+      "built",
+      "partial",
+      "blocked"
+    ],
+    "testStatus": [
+      "not_tested",
+      "ready_to_test",
+      "passed",
+      "failed"
+    ],
+    "acceptanceStatus": [
+      "in_scope",
+      "under_review",
+      "accepted",
+      "rejected"
+    ],
+    "readyForCommit": [
+      "NOT_READY",
+      "ALMOST_READY",
+      "READY"
+    ]
+  }
+}

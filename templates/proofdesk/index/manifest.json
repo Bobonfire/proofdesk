@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "example_project",
+  "generated_at": "2026-03-21T00:00:00Z",
+  "latest_snapshot": "PD_STATE_20260321T000000Z_0000000.json",
+  "latest_event_seq": 1,
+  "latest_update_seq": 1,
+  "items": [
+    {
+      "type": "snapshot",
+      "file": "proofdesk/state/snapshots/PD_STATE_20260321T000000Z_0000000.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "created_at": "2026-03-21T00:00:00Z",
+      "supersedes": null
+    },
+    {
+      "type": "event",
+      "file": "proofdesk/events/PD_EVT_20260321T000000Z_0001_release_readiness_computed.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "created_at": "2026-03-21T00:00:00Z",
+      "supersedes": null
+    },
+    {
+      "type": "update",
+      "file": "proofdesk/updates/PD_UPD_20260321T000000Z_0001_bootstrap.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "created_at": "2026-03-21T00:00:00Z",
+      "supersedes": null
+    }
+  ]
+}

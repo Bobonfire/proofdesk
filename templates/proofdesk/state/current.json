@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-03-21T00:00:00Z",
+  "source": "proofdesk-ui",
+  "current_snapshot": "PD_STATE_20260321T000000Z_0000000.json",
+  "approved_for_release": false,
+  "release_state": {
+    "ready_for_commit": "NOT_READY",
+    "total_functions": 1,
+    "required_functions": 1,
+    "accepted_functions": 0,
+    "blocking_functions": 1,
+    "readiness_reason": "High-priority functions are not accepted yet."
+  },
+  "functions": [
+    {
+      "id": "function_example_bootstrap",
+      "title": "Bootstrap example function",
+      "priority": "high",
+      "devStatus": "in_progress",
+      "testStatus": "not_tested",
+      "acceptanceStatus": "in_scope",
+      "quality_flags": {
+        "needs_refactor": false,
+        "needs_clarification": false
+      },
+      "notes": "Initial placeholder function.",
+      "last_updated_at": "2026-03-21T00:00:00Z"
+    }
+  ],
+  "supersedes_snapshot": null
+}

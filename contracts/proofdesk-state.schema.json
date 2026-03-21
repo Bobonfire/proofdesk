@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofdesk.local/schemas/proofdesk-state.schema.json",
+  "title": "ProofDesk Current State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "source",
+    "current_snapshot",
+    "approved_for_release",
+    "release_state",
+    "functions",
+    "supersedes_snapshot"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "proofdesk-ui",
+        "proofdesk-agent"
+      ]
+    },
+    "current_snapshot": {
+      "type": "string",
+      "pattern": "^PD_STATE_[0-9]{8}T[0-9]{6}Z_[a-f0-9]{7,12}\\.json$"
+    },
+    "approved_for_release": {
+      "type": "boolean"
+    },
+    "release_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ready_for_commit",
+        "total_functions",
+        "required_functions",
+        "accepted_functions",
+        "blocking_functions",
+        "readiness_reason"
+      ],
+      "properties": {
+        "ready_for_commit": {
+          "type": "string",
+          "enum": [
+            "NOT_READY",
+            "ALMOST_READY",
+            "READY"
+          ]
+        },
+        "total_functions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "required_functions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_functions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocking_functions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "readiness_reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "priority",
+          "devStatus",
+          "testStatus",
+          "acceptanceStatus",
+          "last_updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_\\-]{3,128}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "devStatus": {
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "built",
+              "partial",
+              "blocked"
+            ]
+          },
+          "testStatus": {
+            "type": "string",
+            "enum": [
+              "not_tested",
+              "ready_to_test",
+              "passed",
+              "failed"
+            ]
+          },
+          "acceptanceStatus": {
+            "type": "string",
+            "enum": [
+              "in_scope",
+              "under_review",
+              "accepted",
+              "rejected"
+            ]
+          },
+          "quality_flags": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "needs_refactor": {
+                "type": "boolean"
+              },
+              "needs_clarification": {
+                "type": "boolean"
+              }
+            }
+          },
+          "notes": {
+            "type": "string"
+          },
+          "last_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "supersedes_snapshot": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^PD_STATE_[0-9]{8}T[0-9]{6}Z_[a-f0-9]{7,12}\\.json$"
+    }
+  }
+}
