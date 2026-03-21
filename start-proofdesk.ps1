@@ -1,7 +1,7 @@
 param(
   [int]$Port = 4173,
-  [switch]$NoBrowser,
-  [switch]$CheckOnly
+  [switch]$CheckOnly,
+  [switch]$Detach
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,35 +28,21 @@ if ($CheckOnly) {
   exit 0
 }
 
-$url = "http://127.0.0.1:$Port"
-Write-Host "Starting ProofDesk on $url"
+$devCommand = "Set-Location '$root'; npm run dev -w @proofdesk/ui -- --host localhost --port $Port --strictPort --open"
 
-$devProcess = Start-Process `
-  -FilePath "npm" `
-  -ArgumentList @("run", "dev", "--", "--host", "127.0.0.1", "--port", "$Port") `
-  -WorkingDirectory $root `
-  -PassThru
+if ($Detach) {
+  Start-Process `
+    -FilePath "powershell" `
+    -ArgumentList @(
+      "-NoExit",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      $devCommand
+    ) | Out-Null
 
-$ready = $false
-for ($i = 0; $i -lt 20; $i++) {
-  Start-Sleep -Seconds 1
-  try {
-    Invoke-WebRequest -Uri $url -UseBasicParsing -Method Head -TimeoutSec 2 | Out-Null
-    $ready = $true
-    break
-  } catch {
-  }
+  Write-Host "ProofDesk server window gestart. Browser wordt automatisch geopend."
+  exit 0
 }
 
-if (-not $NoBrowser) {
-  Start-Process $url | Out-Null
-}
-
-if ($ready) {
-  Write-Host "ProofDesk is running. Close this window to stop the server."
-} else {
-  Write-Host "Server started, but readiness check did not complete in time."
-  Write-Host "Open manually: $url"
-}
-
-Wait-Process -Id $devProcess.Id
+Invoke-Expression $devCommand
