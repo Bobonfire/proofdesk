@@ -56,7 +56,13 @@ export const seedProject: ProjectSeed = {
       name: "Import valid FIT file",
       type: "happy_path",
       executionType: "api",
-      expectedOutcome: "Activity record created and visible in overview."
+      expectedOutcome: "API should return a successful response for baseline connectivity.",
+      apiConfig: {
+        method: "GET",
+        url: "https://jsonplaceholder.typicode.com/todos/1",
+        expectedStatus: 200,
+        expectedBodyIncludes: "\"id\": 1"
+      }
     },
     {
       id: "tc_dedup_negative",
@@ -64,7 +70,13 @@ export const seedProject: ProjectSeed = {
       name: "Reject duplicate external id",
       type: "negative_case",
       executionType: "api",
-      expectedOutcome: "Second import rejected with duplicate reason."
+      expectedOutcome: "API should return a successful response for baseline connectivity.",
+      apiConfig: {
+        method: "GET",
+        url: "https://jsonplaceholder.typicode.com/todos/2",
+        expectedStatus: 200,
+        expectedBodyIncludes: "\"id\": 2"
+      }
     }
   ]
 };

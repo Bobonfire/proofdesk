@@ -1,4 +1,4 @@
-import type { RuntimeState } from "@proofdesk/domain";
+import { seedProject, type RuntimeState } from "@proofdesk/domain";
 
 const STORAGE_KEY = "proofdesk.runtime.v1";
 
@@ -13,7 +13,17 @@ export function loadRuntimeState(): RuntimeState | null {
       return null;
     }
 
-    return JSON.parse(value) as RuntimeState;
+    const parsed = JSON.parse(value) as Partial<RuntimeState>;
+    if (!parsed.functions) {
+      return null;
+    }
+
+    return {
+      approvedForRelease: Boolean(parsed.approvedForRelease),
+      functions: parsed.functions,
+      testCases: parsed.testCases ?? seedProject.testCases,
+      runHistory: parsed.runHistory ?? []
+    };
   } catch {
     return null;
   }

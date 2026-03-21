@@ -48,6 +48,14 @@ export interface TestCase {
   type: "smoke" | "happy_path" | "edge_case" | "negative_case";
   executionType: "api" | "ui";
   expectedOutcome: string;
+  apiConfig?: {
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    url: string;
+    headersJson?: string;
+    body?: string;
+    expectedStatus?: number;
+    expectedBodyIncludes?: string;
+  };
 }
 
 export interface ProjectSeed {
@@ -69,4 +77,16 @@ export interface ReleaseState {
 export interface RuntimeState {
   approvedForRelease: boolean;
   functions: FunctionItem[];
+  testCases: TestCase[];
+  runHistory: TestRunRecord[];
+}
+
+export interface TestRunRecord {
+  id: string;
+  testCaseId: string;
+  functionId: string;
+  executedAt: string;
+  result: "passed" | "failed" | "error";
+  statusCode?: number;
+  details: string;
 }
