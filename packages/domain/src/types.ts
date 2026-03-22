@@ -84,6 +84,8 @@ export interface ProjectSeed {
   testCases: TestCase[];
 }
 
+export interface ExecutionSeed extends ProjectSeed {}
+
 export interface ReleaseState {
   readyForCommit: ReadyForCommit;
   totalFunctions: number;
@@ -181,4 +183,38 @@ export interface DiscoveryScaffoldSeed {
   discoveryFeatures: DiscoveryFeature[];
   dependencies?: DiscoveryDependency[];
   futureNotes?: string[];
+}
+
+export interface DiscoverySeed {
+  metadata: Omit<DiscoveryScaffoldSeed, "discoveryEpics" | "discoveryFeatures">;
+  discoveryEpics: DiscoveryEpic[];
+  discoveryFeatures: DiscoveryFeature[];
+}
+
+export type CapabilityLayer = "discovery" | "execution" | "mixed";
+export type CapabilityImplementationState = "planned" | "in_progress" | "implemented";
+
+export interface CapabilityFeatureNode {
+  id: string;
+  name: string;
+  description: string;
+  layer: CapabilityLayer;
+  implementationState: CapabilityImplementationState;
+  discoveryFeature: DiscoveryFeature | null;
+  executionFeature: Feature | null;
+  functions: FunctionItem[];
+}
+
+export interface CapabilityEpicNode {
+  id: string;
+  name: string;
+  description: string;
+  layer: CapabilityLayer;
+  discoveryEpic: DiscoveryEpic | null;
+  executionEpic: Epic | null;
+  features: CapabilityFeatureNode[];
+}
+
+export interface CapabilityGraph {
+  epics: CapabilityEpicNode[];
 }

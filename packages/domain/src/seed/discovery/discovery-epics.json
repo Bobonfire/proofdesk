@@ -1,0 +1,99 @@
+[
+    {
+        "id":  "discovery_epic_capability_visibility",
+        "name":  "Capability Visibility",
+        "description":  "Make product scope visible as a living hierarchy, not a static backlog.",
+        "productGoal":  "Users instantly understand what exists and where it belongs.",
+        "userValue":  "Fast orientation without reading code or tickets.",
+        "priority":  "high",
+        "lifecyclePhase":  "in_progress",
+        "planningStatus":  "selected",
+        "notes":  "First trust moment when opening the product.",
+        "order":  1
+    },
+    {
+        "id":  "discovery_epic_function_inspection",
+        "name":  "Function Inspection",
+        "description":  "Let users inspect one function deeply with clear product context.",
+        "productGoal":  "Turn scope visibility into behavioral understanding.",
+        "userValue":  "Confidence in what each function does and why it matters.",
+        "priority":  "high",
+        "lifecyclePhase":  "in_progress",
+        "planningStatus":  "selected",
+        "notes":  "Function remains the key operational unit.",
+        "order":  2
+    },
+    {
+        "id":  "discovery_epic_validation_cockpit",
+        "name":  "Validation Cockpit",
+        "description":  "Provide clear test visibility and low-friction validation paths.",
+        "productGoal":  "Move from seen scope to verified behavior.",
+        "userValue":  "Validation without terminal usage or tooling overhead.",
+        "priority":  "high",
+        "lifecyclePhase":  "planned",
+        "planningStatus":  "scoped",
+        "notes":  "API and guided UI checks are both relevant.",
+        "order":  3
+    },
+    {
+        "id":  "discovery_epic_status_acceptance",
+        "name":  "Status and Acceptance Flow",
+        "description":  "Track progress and acceptance in plain language.",
+        "productGoal":  "Make release-relevant truth visible and understandable.",
+        "userValue":  "Clear overview of what is ready and what is blocked.",
+        "priority":  "high",
+        "lifecyclePhase":  "planned",
+        "planningStatus":  "scoped",
+        "notes":  "AcceptanceStatus remains central to readiness.",
+        "order":  4
+    },
+    {
+        "id":  "discovery_epic_release_handoff",
+        "name":  "Release Handoff to Agent",
+        "description":  "Bridge validated acceptance into safe, explicit release intent.",
+        "productGoal":  "Support human-in-the-loop release without git knowledge.",
+        "userValue":  "Validated means shippable with confidence.",
+        "priority":  "high",
+        "lifecyclePhase":  "planned",
+        "planningStatus":  "candidate",
+        "notes":  "Keep transparent and reversible.",
+        "order":  5
+    },
+    {
+        "id":  "discovery_epic_local_first_state",
+        "name":  "Local-First State and Portability",
+        "description":  "Keep data local, editable, and portable across sessions.",
+        "productGoal":  "No backend required for core product value.",
+        "userValue":  "Ownership, continuity, and easy reset/export.",
+        "priority":  "high",
+        "lifecyclePhase":  "in_progress",
+        "planningStatus":  "scoped",
+        "notes":  "Seed JSON -\u003e runtime state -\u003e local persistence -\u003e export JSON.",
+        "order":  6
+    },
+    {
+        "id":  "discovery_epic_nontechnical_ux",
+        "name":  "Non-Technical UX Confidence",
+        "description":  "Design for vibe coders and product owners first.",
+        "productGoal":  "High clarity with low technical tolerance requirements.",
+        "userValue":  "Users remain in control without becoming engineers.",
+        "priority":  "high",
+        "lifecyclePhase":  "in_progress",
+        "planningStatus":  "selected",
+        "notes":  "Avoid IDE/Jira/dashboard feel.",
+        "order":  7
+    },
+    {
+        "id":  "discovery_epic_extensibility",
+        "name":  "Extensible Without Bloat",
+        "description":  "Prepare a clean path for growth without enterprise sprawl.",
+        "productGoal":  "Stay lightweight while enabling future capabilities.",
+        "userValue":  "Product can evolve without losing simplicity.",
+        "priority":  "medium",
+        "lifecyclePhase":  "future",
+        "planningStatus":  "candidate",
+        "notes":  "Guardrails against platform creep.",
+        "order":  8
+    }
+]
+

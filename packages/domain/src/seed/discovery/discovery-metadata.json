@@ -1,0 +1,52 @@
+{
+    "seedType":  "proofdesk.discovery.scaffold",
+    "seedVersion":  "1.0.0",
+    "generatedOn":  "2026-03-22",
+    "product":  {
+                    "id":  "proofdesk",
+                    "name":  "ProofDesk",
+                    "horizon":  "v1_plus_near_future",
+                    "intent":  "Give non-technical builders clear visibility and confidence from idea to accepted functionality."
+                },
+    "sourceOfTruth":  [
+                          "docs/PRODUCT_OVERVIEW.md",
+                          "docs/ARCHITECTURE.md",
+                          "docs/ProofDesk v1 — Agent Design Document.md",
+                          "docs/ProofDesk v1 — Agent Build \u0026 Release Brief.md",
+                          "docs/Vibe Coder Persona.docx"
+                      ],
+    "dependencies":  [
+                         {
+                             "fromFeatureId":  "discovery_feature_function_detail_context",
+                             "toFeatureId":  "discovery_feature_capability_map_overview",
+                             "reason":  "Function detail depends on selecting an item from the hierarchy."
+                         },
+                         {
+                             "fromFeatureId":  "discovery_feature_testcase_visibility",
+                             "toFeatureId":  "discovery_feature_function_detail_context",
+                             "reason":  "Test visibility is anchored to selected function context."
+                         },
+                         {
+                             "fromFeatureId":  "discovery_feature_release_panel",
+                             "toFeatureId":  "discovery_feature_status_badges",
+                             "reason":  "Readiness summaries depend on reliable status visibility."
+                         },
+                         {
+                             "fromFeatureId":  "discovery_feature_approval_trigger",
+                             "toFeatureId":  "discovery_feature_release_panel",
+                             "reason":  "Approval should be gated by readiness state."
+                         },
+                         {
+                             "fromFeatureId":  "discovery_feature_agent_state_contract",
+                             "toFeatureId":  "discovery_feature_state_import_export",
+                             "reason":  "Agent handoff needs stable and portable JSON state."
+                         }
+                     ],
+    "futureNotes":  [
+                        "Keep this scaffold editable and motivational; it is orientation data, not a rigid sprint backlog.",
+                        "Promote discovery features to execution functions progressively when confidence is high.",
+                        "Maintain plain language and local-first defaults for the Jan persona.",
+                        "Avoid enterprise QA feature creep while extending capability depth."
+                    ]
+}
+

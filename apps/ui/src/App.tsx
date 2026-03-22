@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { seedProject, type AcceptanceStatus, type FunctionItem, type RuntimeState } from "@proofdesk/domain";
+import {
+  mergeDiscoveryAndExecutionGraph,
+  seedDiscovery,
+  seedExecution,
+  type AcceptanceStatus,
+  type FunctionItem,
+  type RuntimeState
+} from "@proofdesk/domain";
 import { computeReleaseState } from "@proofdesk/release";
 import { loadRuntimeState, persistProofdeskContract, saveRuntimeState, type ProofdeskDirectoryHandle } from "@proofdesk/storage";
 import { CapabilityTree, type CapabilityTreeNode } from "./components/CapabilityTree";
@@ -46,6 +53,14 @@ function metricValue(functions: FunctionItem[], mode: "ready_to_test" | "passed"
   return functions.filter((item) => item.testStatus === mode).length;
 }
 
+function textMatchesQuery(text: string | undefined, query: string): boolean {
+  if (!query) {
+    return true;
+  }
+
+  return (text ?? "").toLowerCase().includes(query);
+}
+
 export default function App() {
   const [runtimeState] = useState<RuntimeState>(() => loadRuntimeState());
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -63,42 +78,89 @@ export default function App() {
     [runtimeState.approvedForRelease, runtimeState.functions]
   );
 
-  const epicById = useMemo(() => new Map(seedProject.epics.map((item) => [item.id, item])), []);
-  const featureById = useMemo(() => new Map(seedProject.features.map((item) => [item.id, item])), []);
+  const executionEpicById = useMemo(() => new Map(seedExecution.epics.map((item) => [item.id, item])), []);
+  const executionFeatureById = useMemo(() => new Map(seedExecution.features.map((item) => [item.id, item])), []);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
 
   const filteredFunctions = useMemo(() => {
     return runtimeState.functions.filter((item) => {
-      const feature = featureById.get(item.featureId);
-      const epic = epicById.get(item.epicId);
+      const feature = executionFeatureById.get(item.featureId);
+      const epic = executionEpicById.get(item.epicId);
       const matchesSearch = includesSearch(item, searchQuery, epic?.name ?? "", feature?.name ?? "");
       const matchesAcceptance = acceptanceFilter === "all" || item.acceptanceStatus === acceptanceFilter;
       return matchesSearch && matchesAcceptance;
     });
-  }, [acceptanceFilter, epicById, featureById, runtimeState.functions, searchQuery]);
+  }, [acceptanceFilter, executionEpicById, executionFeatureById, runtimeState.functions, searchQuery]);
 
   const visibleFunctionIds = useMemo(() => new Set(filteredFunctions.map((item) => item.id)), [filteredFunctions]);
+  const runtimeFunctionsByFeatureId = useMemo(() => {
+    const map = new Map<string, FunctionItem[]>();
+    for (const item of runtimeState.functions) {
+      const current = map.get(item.featureId);
+      if (current) {
+        current.push(item);
+        continue;
+      }
+
+      map.set(item.featureId, [item]);
+    }
+    return map;
+  }, [runtimeState.functions]);
+
+  const capabilityGraph = useMemo(() => {
+    return mergeDiscoveryAndExecutionGraph(seedDiscovery, {
+      ...seedExecution,
+      functions: runtimeState.functions,
+      testCases: runtimeState.testCases
+    });
+  }, [runtimeState.functions, runtimeState.testCases]);
 
   const treeNodes = useMemo<CapabilityTreeNode[]>(() => {
-    return seedProject.epics
-      .map((epic) => {
-        const features = seedProject.features
-          .filter((feature) => feature.epicId === epic.id)
-          .map((feature) => {
-            const functions = runtimeState.functions.filter(
-              (functionItem) => functionItem.featureId === feature.id && visibleFunctionIds.has(functionItem.id)
-            );
+    return capabilityGraph.epics
+      .map((epicNode) => {
+        const features = epicNode.features
+          .map((featureNode) => {
+            const runtimeFunctions = featureNode.executionFeature
+              ? runtimeFunctionsByFeatureId.get(featureNode.executionFeature.id) ?? []
+              : [];
+
+            const functions = runtimeFunctions.filter((functionItem) => visibleFunctionIds.has(functionItem.id));
+            const matchesText =
+              textMatchesQuery(epicNode.name, normalizedQuery) ||
+              textMatchesQuery(epicNode.description, normalizedQuery) ||
+              textMatchesQuery(featureNode.name, normalizedQuery) ||
+              textMatchesQuery(featureNode.description, normalizedQuery) ||
+              textMatchesQuery(featureNode.discoveryFeature?.whyItMatters, normalizedQuery);
+
+            const shouldShowFeature =
+              functions.length > 0 ||
+              featureNode.layer !== "execution" ||
+              runtimeFunctions.length === 0 ||
+              matchesText;
+
+            if (!shouldShowFeature) {
+              return null;
+            }
 
             return {
-              feature,
+              ...featureNode,
               functions
             };
           })
-          .filter((item) => item.functions.length > 0);
+          .filter((featureNode): featureNode is NonNullable<typeof featureNode> => featureNode !== null);
 
-        return { epic, features };
+        const epicMatchesText = textMatchesQuery(epicNode.name, normalizedQuery) || textMatchesQuery(epicNode.description, normalizedQuery);
+        if (features.length === 0 && !epicMatchesText) {
+          return null;
+        }
+
+        return {
+          ...epicNode,
+          features
+        };
       })
-      .filter((item) => item.features.length > 0);
-  }, [runtimeState.functions, visibleFunctionIds]);
+      .filter((node): node is CapabilityTreeNode => node !== null);
+  }, [capabilityGraph, normalizedQuery, runtimeFunctionsByFeatureId, visibleFunctionIds]);
 
   const flattenedVisibleFunctions = useMemo(
     () => treeNodes.flatMap((node) => node.features.flatMap((featureNode) => featureNode.functions)),
@@ -121,8 +183,8 @@ export default function App() {
     () => runtimeState.functions.find((item) => item.id === selectedFunctionId) ?? null,
     [runtimeState.functions, selectedFunctionId]
   );
-  const selectedFeature = selectedFunction ? featureById.get(selectedFunction.featureId) ?? null : null;
-  const selectedEpic = selectedFunction ? epicById.get(selectedFunction.epicId) ?? null : null;
+  const selectedFeature = selectedFunction ? executionFeatureById.get(selectedFunction.featureId) ?? null : null;
+  const selectedEpic = selectedFunction ? executionEpicById.get(selectedFunction.epicId) ?? null : null;
   const selectedTestCases = useMemo(
     () => runtimeState.testCases.filter((item) => item.functionId === selectedFunction?.id),
     [runtimeState.testCases, selectedFunction?.id]

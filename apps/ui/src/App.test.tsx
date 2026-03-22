@@ -3,6 +3,14 @@ import { describe, expect, it } from "vitest";
 import App from "./App";
 
 describe("Capability map slice", () => {
+  it("renders discovery planned scope even without execution functions", () => {
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "Capability Visibility" })).toBeInTheDocument();
+    expect(screen.getByText("Capability Map Overview")).toBeInTheDocument();
+    expect(screen.getAllByText("Planned scope: no implemented execution functions yet.").length).toBeGreaterThan(0);
+  });
+
   it("renders hierarchy sections", () => {
     render(<App />);
 
@@ -37,5 +45,12 @@ describe("Capability map slice", () => {
 
     expect(screen.getByText("No long description provided yet.")).toBeInTheDocument();
     expect(screen.getByText("No known risks recorded.")).toBeInTheDocument();
+  });
+
+  it("renders execution functions alongside discovery scope", () => {
+    render(<App />);
+
+    expect(screen.getByRole("button", { name: /Calculate FTP estimate/i })).toBeInTheDocument();
+    expect(screen.getAllByText("Execution only").length).toBeGreaterThan(0);
   });
 });

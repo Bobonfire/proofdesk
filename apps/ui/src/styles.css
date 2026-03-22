@@ -168,6 +168,13 @@ select {
   font-size: 16px;
 }
 
+.tree-epic-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .tree-epic-header p {
   margin: 4px 0 0;
   color: var(--muted);
@@ -183,6 +190,72 @@ select {
 .tree-feature h4 {
   margin: 0 0 6px;
   font-size: 14px;
+}
+
+.tree-feature-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: start;
+}
+
+.tree-feature-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.scope-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 2px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.scope-discovery {
+  background: #ece8de;
+  border-color: #d9cebe;
+  color: #64594c;
+}
+
+.scope-execution {
+  background: #dfeaf8;
+  border-color: #c5d7ee;
+  color: #224f7d;
+}
+
+.scope-mixed {
+  background: #ddeef0;
+  border-color: #bfdbe0;
+  color: #12434a;
+}
+
+.implementation-planned {
+  background: #f4f0e7;
+  border-color: #ded4c3;
+  color: #736754;
+}
+
+.implementation-in_progress {
+  background: var(--warning-soft);
+  border-color: #e7d2a2;
+  color: var(--warning);
+}
+
+.implementation-implemented {
+  background: var(--ok-soft);
+  border-color: #b3d4b9;
+  color: var(--ok);
+}
+
+.tree-feature-empty {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 .tree-function-list {
