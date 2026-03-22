@@ -1,0 +1,44 @@
+[
+  {
+    "id": "feature_ftp_trends",
+    "epicId": "epic_analytics",
+    "name": "FTP Trends",
+    "description": "Show how FTP estimates evolve over time.",
+    "priority": "high"
+  },
+  {
+    "id": "feature_training_load",
+    "epicId": "epic_analytics",
+    "name": "Training Load",
+    "description": "Track and compare weekly training stress.",
+    "priority": "high"
+  },
+  {
+    "id": "feature_strava_import",
+    "epicId": "epic_activities",
+    "name": "Strava Import",
+    "description": "Pull activities from the connected Strava account.",
+    "priority": "high"
+  },
+  {
+    "id": "feature_activity_timeline",
+    "epicId": "epic_activities",
+    "name": "Activity Timeline",
+    "description": "Render activity history in an easy-to-scan timeline.",
+    "priority": "medium"
+  },
+  {
+    "id": "feature_profile_preferences",
+    "epicId": "epic_settings",
+    "name": "Profile Preferences",
+    "description": "Manage user profile values used across the app.",
+    "priority": "medium"
+  },
+  {
+    "id": "feature_notifications",
+    "epicId": "epic_settings",
+    "name": "Notifications",
+    "description": "Control delivery preferences for reminders and reports.",
+    "priority": "low"
+  }
+]

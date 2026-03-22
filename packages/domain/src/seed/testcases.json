@@ -1,0 +1,138 @@
+[
+  {
+    "id": "tc_ftp_estimate_valid_payload",
+    "functionId": "function_calculate_ftp_estimate",
+    "name": "Valid FTP estimate payload",
+    "description": "Checks that a valid power profile returns an FTP estimate.",
+    "testType": "happy_path",
+    "executionType": "api",
+    "lastResult": "passed",
+    "lastRunAt": "2026-03-20T10:12:00Z"
+  },
+  {
+    "id": "tc_ftp_estimate_missing_curve",
+    "functionId": "function_calculate_ftp_estimate",
+    "name": "Missing power curve",
+    "description": "Returns a clear validation message when power curve is missing.",
+    "testType": "negative_case",
+    "executionType": "api",
+    "lastResult": "passed",
+    "lastRunAt": "2026-03-20T10:16:00Z"
+  },
+  {
+    "id": "tc_ftp_chart_loads",
+    "functionId": "function_show_ftp_chart",
+    "name": "Open FTP trend chart",
+    "description": "User can open chart view and see rendered trend points.",
+    "testType": "smoke",
+    "executionType": "ui"
+  },
+  {
+    "id": "tc_training_load_weekly_response",
+    "functionId": "function_compute_training_load",
+    "name": "Weekly load response shape",
+    "description": "Response includes total load and period boundaries.",
+    "testType": "regression",
+    "executionType": "api",
+    "lastResult": "failed",
+    "lastRunAt": "2026-03-21T08:45:00Z"
+  },
+  {
+    "id": "tc_training_load_empty_week",
+    "functionId": "function_compute_training_load",
+    "name": "Empty week fallback",
+    "description": "Weeks without rides still return a stable response payload.",
+    "testType": "edge_case",
+    "executionType": "api"
+  },
+  {
+    "id": "tc_weekly_load_compare_cards",
+    "functionId": "function_compare_weekly_load",
+    "name": "Compare card delta visibility",
+    "description": "Delta indicator appears when two weeks are available.",
+    "testType": "smoke",
+    "executionType": "ui"
+  },
+  {
+    "id": "tc_strava_import_new_items",
+    "functionId": "function_import_strava_activity",
+    "name": "Import fresh activities",
+    "description": "New activities are appended after successful import.",
+    "testType": "happy_path",
+    "executionType": "api",
+    "lastResult": "passed",
+    "lastRunAt": "2026-03-19T06:30:00Z"
+  },
+  {
+    "id": "tc_strava_import_expired_token",
+    "functionId": "function_import_strava_activity",
+    "name": "Expired token handling",
+    "description": "Shows a clear error state when Strava token is expired.",
+    "testType": "negative_case",
+    "executionType": "api",
+    "lastResult": "error",
+    "lastRunAt": "2026-03-19T06:35:00Z"
+  },
+  {
+    "id": "tc_deduplicate_activity_ids",
+    "functionId": "function_deduplicate_activities",
+    "name": "Ignore duplicate activity ids",
+    "description": "Duplicate ids do not create extra timeline entries.",
+    "testType": "regression",
+    "executionType": "api"
+  },
+  {
+    "id": "tc_timeline_render_order",
+    "functionId": "function_render_activity_timeline",
+    "name": "Timeline newest first",
+    "description": "Timeline renders newest activities at the top.",
+    "testType": "smoke",
+    "executionType": "ui",
+    "lastResult": "passed",
+    "lastRunAt": "2026-03-20T14:20:00Z"
+  },
+  {
+    "id": "tc_timeline_filter_date_range",
+    "functionId": "function_filter_activity_timeline",
+    "name": "Filter by date range",
+    "description": "Timeline narrows to chosen date range values.",
+    "testType": "exploratory",
+    "executionType": "ui"
+  },
+  {
+    "id": "tc_profile_settings_persist",
+    "functionId": "function_save_profile_settings",
+    "name": "Profile save persists",
+    "description": "Saved profile values remain visible after refresh.",
+    "testType": "happy_path",
+    "executionType": "api",
+    "lastResult": "passed",
+    "lastRunAt": "2026-03-18T09:10:00Z"
+  },
+  {
+    "id": "tc_profile_validation_required_fields",
+    "functionId": "function_validate_profile_form",
+    "name": "Required profile fields",
+    "description": "Missing required fields are highlighted before submit.",
+    "testType": "negative_case",
+    "executionType": "ui",
+    "lastResult": "failed",
+    "lastRunAt": "2026-03-21T12:05:00Z"
+  },
+  {
+    "id": "tc_toggle_email_notifications",
+    "functionId": "function_toggle_email_notifications",
+    "name": "Toggle email preference",
+    "description": "Email notification preference can be enabled and disabled.",
+    "testType": "smoke",
+    "executionType": "api"
+  },
+  {
+    "id": "tc_preview_notification_preferences",
+    "functionId": "function_preview_notification_preferences",
+    "name": "Preview summary text",
+    "description": "Preview explains current notification settings in plain language.",
+    "testType": "manual_verification",
+    "executionType": "ui"
+  }
+]

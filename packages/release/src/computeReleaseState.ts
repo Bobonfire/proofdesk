@@ -48,7 +48,6 @@ function buildScopeItem(
 }
 
 export function computeScopeReadiness(functions: FunctionItem[], features: Feature[], epics: Epic[]): ScopeReadiness {
-  const featureById = new Map(features.map((feature) => [feature.id, feature]));
   const functionItems = functions.map((func) => {
     if (func.priority !== "high") {
       return {
@@ -72,11 +71,8 @@ export function computeScopeReadiness(functions: FunctionItem[], features: Featu
   });
 
   const epicItems = epics.map((epic) => {
-    const featureIds = new Set(epic.featureIds);
-    const scopedFunctions = functions.filter((func) => {
-      const feature = featureById.get(func.featureId);
-      return Boolean(feature && featureIds.has(feature.id));
-    });
+    const featureIds = new Set(features.filter((feature) => feature.epicId === epic.id).map((feature) => feature.id));
+    const scopedFunctions = functions.filter((func) => featureIds.has(func.featureId));
 
     return buildScopeItem("Epic", epic.id, epic.name, scopedFunctions);
   });

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "epic_analytics",
+    "name": "Analytics",
+    "description": "Capabilities that explain athlete performance and trends.",
+    "priority": "high",
+    "notes": "Primary value area for weekly decision making."
+  },
+  {
+    "id": "epic_activities",
+    "name": "Activities",
+    "description": "Capabilities that collect and present workout activity data.",
+    "priority": "high"
+  },
+  {
+    "id": "epic_settings",
+    "name": "Settings",
+    "description": "Capabilities that let users configure profile and notification behavior.",
+    "priority": "medium"
+  }
+]
